@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ArchiverModule } from './archiver/archiver.module';
+import { ArchiverModule } from '@archiver/archiver';
 import { CheckerModule } from './checker/checker.module';
+import { SharedModule } from './shared';
+import { TasksModule } from '@archiver/tasks';
 
 @Module({
-  imports: [ArchiverModule, CheckerModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [ArchiverModule, CheckerModule, SharedModule, TasksModule],
 })
 export class AppModule {}
