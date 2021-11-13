@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import * as config from './config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from './services';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Global()
 @Module({
@@ -17,6 +18,7 @@ import { TypeOrmConfigService } from './services';
       load: [...Object.values(config)],
       isGlobal: true,
     }),
+    EventEmitterModule.forRoot(),
     BullModule.forRoot({
       redis: {
         host: 'localhost',
@@ -27,6 +29,6 @@ import { TypeOrmConfigService } from './services';
       useClass: TypeOrmConfigService,
     }),
   ],
-  exports: [BullModule],
+  exports: [BullModule, LoggingModule, TypeOrmModule],
 })
 export class SharedModule {}

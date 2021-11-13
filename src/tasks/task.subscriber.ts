@@ -5,10 +5,11 @@ import {
   InsertEvent,
 } from 'typeorm';
 import { Task } from './models';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @EventSubscriber()
 export class TaskSubscriber implements EntitySubscriberInterface<Task> {
-  constructor(connection: Connection) {
+  constructor(connection: Connection, private eventEmitter: EventEmitter2) {
     connection.subscribers.push(this);
   }
 
@@ -16,7 +17,7 @@ export class TaskSubscriber implements EntitySubscriberInterface<Task> {
     return Task;
   }
 
-  beforeInsert(event: InsertEvent<Task>) {
-    console.log(`BEFORE USER INSERTED: `, event.entity);
+  afterInsert(event: InsertEvent<Task>) {
+    this.eventEmitter.emit('task.created', event.entity);
   }
 }

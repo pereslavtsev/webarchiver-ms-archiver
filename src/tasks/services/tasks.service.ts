@@ -6,6 +6,7 @@ import { CoreProvider } from '@archiver/shared';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 import type { ListTasksRequest } from '@webarchiver/protoc/dist/archiver';
 import { buildPaginator } from 'typeorm-cursor-pagination';
+import { Snapshot } from '@archiver/snapshots';
 
 @Injectable()
 export class TasksService extends CoreProvider {
@@ -42,5 +43,10 @@ export class TasksService extends CoreProvider {
     // @ts-ignore
     task.desiredDate = new Date();
     return this.tasksRepository.save(task);
+  }
+
+  async addSnapshots(taskId: Task['id'], snapshots: Snapshot[]) {
+    const task = await this.findById(taskId);
+    return this.tasksRepository.save({ ...task, snapshots });
   }
 }

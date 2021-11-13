@@ -1,20 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { InjectMementoClient } from '@archiver/memento';
-import MementoClient from '@mementoweb/client';
-import { InjectQueue } from '@nestjs/bull';
-import { TIMETRAVEL_QUEUE } from '@archiver/archiver/archiver.constants';
-import { Queue } from 'bull';
+import type MementoClient from '@mementoweb/client';
+import type { Task } from '@archiver/tasks';
+import { TasksService } from '@archiver/tasks';
+import type { MementosResponse } from '@mementoweb/client/lib/classes';
+import { Snapshot, SnapshotsService } from '@archiver/snapshots';
 
 @Injectable()
 export class ArchiverService {
   constructor(
     @InjectMementoClient()
-    private mementoClient: MementoClient,
-    @InjectQueue(TIMETRAVEL_QUEUE)
-    private timetravelQueue: Queue<any>,
+    private client: MementoClient,
+    private tasksService: TasksService,
+    private snapshotsService: SnapshotsService,
   ) {}
 
-  findSnapshots(url: string) {
-    this.mementoClient.uri(url);
+  private transformSnapshots(
+    response: MementosResponse['mementos']['closest'],
+  ): Snapshot[] {
+    return response.uri.map((uri) =>
+      this.snapshotsService.create(uri, response.datetime),
+    );
+  }
+
+  async run(task: Task) {
+    const {
+      mementos: { closest },
+    } = await this.client.uri(task.url).mementos('2013');
+    const snapshots = this.transformSnapshots(closest);
+    await this.tasksService.addSnapshots(task.id, snapshots);
+    return snapshots;
   }
 }

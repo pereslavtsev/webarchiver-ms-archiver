@@ -2,10 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { IsNotEmpty, IsUrl, IsUUID } from 'class-validator';
+import { Snapshot } from '@archiver/snapshots';
 
 @Entity('tasks')
 export class Task {
@@ -29,4 +31,7 @@ export class Task {
 
   @UpdateDateColumn()
   readonly updatedAt: Date;
+
+  @OneToMany(() => Snapshot, (snapshot) => snapshot.task, { cascade: true })
+  readonly snapshots: Snapshot[];
 }
