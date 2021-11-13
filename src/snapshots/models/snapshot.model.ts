@@ -42,5 +42,5 @@ export class Snapshot {
     onDelete: 'CASCADE',
     lazy: true,
   })
-  readonly task: Promise<Task>;
+  readonly task: Task | Promise<Task>;
 }

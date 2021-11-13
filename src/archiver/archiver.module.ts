@@ -20,5 +20,6 @@ import { SnapshotsModule } from '@archiver/snapshots';
   ],
   controllers: [ArchiverController],
   providers: [ArchiverService, ArchiverListener, ArchiverConsumer],
+  exports: [ArchiverService],
 })
 export class ArchiverModule {}

@@ -10,6 +10,10 @@ export function OnTaskCreated() {
   return OnEvent('task.created');
 }
 
+export function OnTaskDone() {
+  return OnEvent('task.done');
+}
+
 export function OnSnapshotsReceived() {
   return OnEvent('snapshots.received');
 }

@@ -18,7 +18,6 @@ export class CheckerListener extends CoreProvider {
 
   @OnSnapshotsReceived()
   async handleSnapshotCreatedEvent(task: Task) {
-    console.log(4444);
     await this.checkerQueue.add(task, {
       jobId: task.id,
     });

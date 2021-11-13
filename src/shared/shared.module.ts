@@ -18,7 +18,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       load: [...Object.values(config)],
       isGlobal: true,
     }),
-    EventEmitterModule.forRoot(),
+    EventEmitterModule.forRoot({ wildcard: true }),
     BullModule.forRoot({
       redis: {
         host: 'localhost',

@@ -4,6 +4,7 @@ import { Snapshot } from '../models';
 import { InjectSnapshotsRepository } from '../snapshots.decorators';
 import { CoreProvider } from '@archiver/shared';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class SnapshotsService extends CoreProvider {
@@ -11,6 +12,7 @@ export class SnapshotsService extends CoreProvider {
     @RootLogger() rootLogger: Bunyan,
     @InjectSnapshotsRepository()
     private snapshotsRepository: Repository<Snapshot>,
+    private eventEmitter: EventEmitter2,
   ) {
     super(rootLogger);
   }
@@ -34,11 +36,22 @@ export class SnapshotsService extends CoreProvider {
     });
   }
 
-  setChecked(snapshotId: Snapshot['id']) {
-    return this.setStatus(snapshotId, Snapshot.Status.CHECKED);
+  async cancelPending(task: Snapshot['task']): Promise<void> {
+    await this.snapshotsRepository.update(
+      { task, status: Snapshot.Status.PENDING },
+      { status: Snapshot.Status.CANCELLED },
+    );
   }
 
-  setFailed(snapshotId: Snapshot['id']) {
-    return this.setStatus(snapshotId, Snapshot.Status.FAILED);
+  async setChecked(snapshotId: Snapshot['id']): Promise<Snapshot> {
+    const snapshot = await this.setStatus(snapshotId, Snapshot.Status.CHECKED);
+    this.eventEmitter.emit('snapshot.checked', snapshot);
+    return snapshot;
+  }
+
+  async setFailed(snapshotId: Snapshot['id']): Promise<Snapshot> {
+    const snapshot = await this.setStatus(snapshotId, Snapshot.Status.FAILED);
+    this.eventEmitter.emit('snapshot.failed', snapshot);
+    return snapshot;
   }
 }
