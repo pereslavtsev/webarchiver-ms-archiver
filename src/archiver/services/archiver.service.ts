@@ -5,15 +5,20 @@ import type { Task } from '@archiver/tasks';
 import { TasksService } from '@archiver/tasks';
 import type { MementosResponse } from '@mementoweb/client/lib/classes';
 import { Snapshot, SnapshotsService } from '@archiver/snapshots';
+import { CoreProvider } from '@archiver/shared';
+import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 
 @Injectable()
-export class ArchiverService {
+export class ArchiverService extends CoreProvider {
   constructor(
+    @RootLogger() rootLogger: Bunyan,
     @InjectMementoClient()
     private client: MementoClient,
     private tasksService: TasksService,
     private snapshotsService: SnapshotsService,
-  ) {}
+  ) {
+    super(rootLogger);
+  }
 
   private transformSnapshots(
     response: MementosResponse['mementos']['closest'],

@@ -12,6 +12,8 @@ import { Task } from '@archiver/tasks';
 
 @Entity('snapshots')
 export class Snapshot {
+  static Status = SnapshotStatus;
+
   @IsUUID()
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
@@ -36,6 +38,9 @@ export class Snapshot {
   @UpdateDateColumn()
   readonly updatedAt: Date;
 
-  @ManyToOne(() => Task, (task) => task.snapshots, { onDelete: 'CASCADE' })
-  readonly task: Task;
+  @ManyToOne(() => Task, (task) => task.snapshots, {
+    onDelete: 'CASCADE',
+    lazy: true,
+  })
+  readonly task: Promise<Task>;
 }

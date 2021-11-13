@@ -1,0 +1,63 @@
+import { CoreProvider } from '@archiver/shared';
+import { Injectable } from '@nestjs/common';
+import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
+import { Snapshot } from '@archiver/snapshots';
+import { InjectContext } from 'nest-puppeteer';
+import { BrowserContext, Page } from 'puppeteer';
+import { Task } from '@archiver/tasks';
+
+@Injectable()
+export class CheckerService extends CoreProvider {
+  constructor(
+    @RootLogger() rootLogger: Bunyan,
+    @InjectContext() private readonly browserContext: BrowserContext,
+  ) {
+    super(rootLogger);
+  }
+
+  private async gotoPage(uri: Snapshot['uri']) {
+    const page = await this.browserContext.newPage();
+    await page.goto(uri, { waitUntil: 'networkidle2' });
+    return page;
+  }
+
+  private async getPageContent(page: Page): Promise<string> {
+    const url = page.url();
+
+    if (url.includes('arquivo.pt')) {
+      const iframe = await page.$('#replay_iframe');
+      const contentFrame = await iframe.contentFrame();
+
+      return contentFrame.content();
+    }
+  }
+
+  async checkSnapshot(
+    snapshot: Snapshot,
+    quote: Task['quote'],
+  ): Promise<boolean> {
+    const log = this.log.child({ reqId: snapshot.id });
+    const { uri } = snapshot;
+
+    log.debug(`goto page ${uri}...`);
+    const page = await this.gotoPage(uri);
+    const content = await this.getPageContent(page);
+
+    const res = new RegExp(quote, 'ig').exec(content);
+
+    await page.close();
+
+    if (!res) {
+      log.warn(
+        `no matched phrase "${quote}" has been found on the page ${uri}`,
+      );
+      return false;
+    }
+
+    log.debug(
+      `quote "${quote}" has been founded (${res.length}) on the page ${uri}`,
+    );
+
+    return true;
+  }
+}

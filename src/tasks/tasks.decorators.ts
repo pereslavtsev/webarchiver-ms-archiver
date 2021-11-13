@@ -9,3 +9,7 @@ export function InjectTasksRepository() {
 export function OnTaskCreated() {
   return OnEvent('task.created');
 }
+
+export function OnSnapshotsReceived() {
+  return OnEvent('snapshots.received');
+}

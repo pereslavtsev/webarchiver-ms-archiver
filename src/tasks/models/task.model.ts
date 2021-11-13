@@ -8,9 +8,12 @@ import {
 } from 'typeorm';
 import { IsNotEmpty, IsUrl, IsUUID } from 'class-validator';
 import { Snapshot } from '@archiver/snapshots';
+import { TaskStatus } from '../enums';
 
 @Entity('tasks')
 export class Task {
+  static Status = TaskStatus;
+
   @IsUUID()
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
@@ -21,6 +24,14 @@ export class Task {
 
   @Column('timestamp')
   readonly desiredDate: Date;
+
+  @Column({
+    type: 'enum',
+    enum: TaskStatus,
+    enumName: 'task_status',
+    default: TaskStatus.PENDING,
+  })
+  readonly status: TaskStatus;
 
   @IsNotEmpty()
   @Column()

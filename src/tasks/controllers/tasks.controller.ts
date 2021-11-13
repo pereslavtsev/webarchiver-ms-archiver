@@ -8,7 +8,7 @@ import {
 import { CoreProvider } from '@archiver/shared';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 import { TasksService } from '../services';
-import { Metadata } from '@grpc/grpc-js';
+// import { Metadata } from '@grpc/grpc-js';
 import { CreateTaskDto, GetTaskDto, ListTasksDto } from '../dto';
 
 @Controller('tasks')

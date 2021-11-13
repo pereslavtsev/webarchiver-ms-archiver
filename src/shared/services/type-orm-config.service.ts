@@ -27,7 +27,7 @@ export class TypeOrmConfigService
       entities: [__dirname, 'dist/**/*.model{.ts,.js}'],
       namingStrategy: new SnakeNamingStrategy(),
       synchronize: true,
-      //logging: true,
+      logging: true,
     };
   }
 }
