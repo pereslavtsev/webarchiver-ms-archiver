@@ -38,6 +38,7 @@
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/typeorm": "^8.0.2",
     "bull": "3.3",
+    "cheerio": "^1.0.0-rc.10",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "nest-puppeteer": "^1.1.1",
@@ -49,6 +50,7 @@
     "typeorm": "^0.2.38",
     "typeorm-cursor-pagination": "^0.6.1",
     "typeorm-naming-strategies": "^2.0.0",
+    "url-parse": "^1.5.3",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
@@ -61,6 +63,7 @@
     "@types/node": "^16.0.0",
     "@types/puppeteer": "^5.4.4",
     "@types/supertest": "^2.0.11",
+    "@types/url-parse": "^1.4.4",
     "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "@typescript-eslint/parser": "^4.28.2",

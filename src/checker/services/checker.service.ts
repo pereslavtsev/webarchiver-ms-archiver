@@ -5,6 +5,8 @@ import { Snapshot } from '@archiver/snapshots';
 import { InjectContext } from 'nest-puppeteer';
 import { BrowserContext, Page } from 'puppeteer';
 import { Task } from '@archiver/tasks';
+import cheerio from 'cheerio';
+import parse from 'url-parse';
 
 @Injectable()
 export class CheckerService extends CoreProvider {
@@ -17,18 +19,23 @@ export class CheckerService extends CoreProvider {
 
   private async gotoPage(uri: Snapshot['uri']) {
     const page = await this.browserContext.newPage();
-    await page.goto(uri, { waitUntil: 'networkidle2' });
+    await page.goto(uri, { waitUntil: 'networkidle2', timeout: 60 * 1000 });
     return page;
   }
 
   private async getPageContent(page: Page): Promise<string> {
-    const url = page.url();
+    const { hostname } = parse(page.url());
 
-    if (url.includes('arquivo.pt')) {
-      const iframe = await page.$('#replay_iframe');
-      const contentFrame = await iframe.contentFrame();
+    switch (hostname) {
+      case 'arquivo.pt': {
+        const iframe = await page.$('#replay_iframe');
+        const contentFrame = await iframe.contentFrame();
 
-      return contentFrame.content();
+        return contentFrame.content();
+      }
+      default: {
+        return page.content();
+      }
     }
   }
 
@@ -43,7 +50,8 @@ export class CheckerService extends CoreProvider {
     const page = await this.gotoPage(uri);
     const content = await this.getPageContent(page);
 
-    const res = new RegExp(quote, 'ig').exec(content);
+    const $ = cheerio.load(content);
+    const res = new RegExp(quote, 'ig').exec($.text());
 
     await page.close();
 

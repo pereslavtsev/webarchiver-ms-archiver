@@ -7,12 +7,12 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { IsUUID } from 'class-validator';
-import { SnapshotStatus } from '@archiver/snapshots/enums';
+import { archiver } from '@webarchiver/protoc';
 import { Task } from '@archiver/tasks';
 
 @Entity('snapshots')
 export class Snapshot {
-  static Status = SnapshotStatus;
+  static Status = archiver.Snapshot_Status;
 
   @IsUUID()
   @PrimaryGeneratedColumn('uuid')
@@ -26,11 +26,11 @@ export class Snapshot {
 
   @Column({
     type: 'enum',
-    enum: SnapshotStatus,
+    enum: Snapshot.Status,
     enumName: 'snapshot_status',
-    default: SnapshotStatus.PENDING,
+    default: Snapshot.Status.PENDING,
   })
-  readonly status: SnapshotStatus;
+  readonly status: archiver.Snapshot_Status;
 
   @CreateDateColumn()
   readonly createdAt: Date;

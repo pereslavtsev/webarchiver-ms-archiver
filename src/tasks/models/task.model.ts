@@ -8,11 +8,11 @@ import {
 } from 'typeorm';
 import { IsNotEmpty, IsUrl, IsUUID } from 'class-validator';
 import { Snapshot } from '@archiver/snapshots';
-import { TaskStatus } from '../enums';
+import { archiver } from '@webarchiver/protoc';
 
 @Entity('tasks')
 export class Task {
-  static Status = TaskStatus;
+  static Status = archiver.Task_Status;
 
   @IsUUID()
   @PrimaryGeneratedColumn('uuid')
@@ -27,11 +27,11 @@ export class Task {
 
   @Column({
     type: 'enum',
-    enum: TaskStatus,
+    enum: archiver.Task_Status,
     enumName: 'task_status',
-    default: TaskStatus.PENDING,
+    default: archiver.Task_Status.PENDING,
   })
-  readonly status: TaskStatus;
+  readonly status: archiver.Task_Status;
 
   @IsNotEmpty()
   @Column()
@@ -43,6 +43,9 @@ export class Task {
   @UpdateDateColumn()
   readonly updatedAt: Date;
 
-  @OneToMany(() => Snapshot, (snapshot) => snapshot.task, { cascade: true })
+  @OneToMany(() => Snapshot, (snapshot) => snapshot.task, {
+    cascade: true,
+    eager: true,
+  })
   readonly snapshots: Snapshot[];
 }

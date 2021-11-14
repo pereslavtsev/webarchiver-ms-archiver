@@ -1,7 +1,7 @@
-import type { GetTaskRequest } from '@webarchiver/protoc/dist/archiver';
+import type { archiver } from '@webarchiver/protoc';
 import { Task } from '../models';
 import { PickType } from '@nestjs/mapped-types';
 
 export class GetTaskDto
   extends PickType(Task, ['id'] as const)
-  implements GetTaskRequest {}
+  implements archiver.GetTaskRequest {}

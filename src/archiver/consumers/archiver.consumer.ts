@@ -11,7 +11,7 @@ import { CoreProvider } from '@archiver/shared';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 import { ArchiverService } from '../services';
 import { TasksService } from '@archiver/tasks';
-import { Snapshot } from '@archiver/snapshots';
+import { Snapshot, SnapshotsService } from '@archiver/snapshots';
 
 @Processor(TIMETRAVEL_QUEUE)
 export class ArchiverConsumer extends CoreProvider {
@@ -19,6 +19,7 @@ export class ArchiverConsumer extends CoreProvider {
     @RootLogger() rootLogger: Bunyan,
     private archiverService: ArchiverService,
     private tasksService: TasksService,
+    private snapshotsService: SnapshotsService,
   ) {
     super(rootLogger);
   }
@@ -51,6 +52,7 @@ export class ArchiverConsumer extends CoreProvider {
       log.error(error);
       await Promise.all([
         this.tasksService.setFailed(data.id),
+        this.snapshotsService.cancelPending(data),
         job.moveToFailed({ message: (error as Error).message }),
       ]);
     }

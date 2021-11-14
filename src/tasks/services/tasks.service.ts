@@ -4,7 +4,7 @@ import type { TasksRepository } from '../tasks.types';
 import { Task } from '../models';
 import { CoreProvider } from '@archiver/shared';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
-import type { ListTasksRequest } from '@webarchiver/protoc/dist/archiver';
+import type { archiver } from '@webarchiver/protoc';
 import { buildPaginator } from 'typeorm-cursor-pagination';
 import { Snapshot } from '@archiver/snapshots';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -24,7 +24,7 @@ export class TasksService extends CoreProvider {
     return this.tasksRepository.findOneOrFail(id);
   }
 
-  findAll({ pageSize, pageToken }: ListTasksRequest) {
+  findAll({ pageSize, pageToken }: archiver.ListTasksRequest) {
     const queryBuilder = this.tasksRepository.createQueryBuilder('task');
 
     const paginator = buildPaginator({
@@ -63,6 +63,12 @@ export class TasksService extends CoreProvider {
   async setFailed(taskId: Task['id']): Promise<Task> {
     const task = await this.setStatus(taskId, Task.Status.FAILED);
     this.eventEmitter.emit('task.failed', task);
+    return task;
+  }
+
+  async setCancelled(taskId: Task['id']): Promise<Task> {
+    const task = await this.setStatus(taskId, Task.Status.CANCELLED);
+    this.eventEmitter.emit('task.cancelled', task);
     return task;
   }
 
