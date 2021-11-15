@@ -12,7 +12,7 @@ import { archiver } from '@webarchiver/protoc';
 
 @Entity('tasks')
 export class Task {
-  static Status = archiver.Task_Status;
+  static Status = archiver.v1.Task_Status;
 
   @IsUUID()
   @PrimaryGeneratedColumn('uuid')
@@ -27,11 +27,11 @@ export class Task {
 
   @Column({
     type: 'enum',
-    enum: archiver.Task_Status,
+    enum: archiver.v1.Task_Status,
     enumName: 'task_status',
-    default: archiver.Task_Status.PENDING,
+    default: archiver.v1.Task_Status.PENDING,
   })
-  readonly status: archiver.Task_Status;
+  readonly status: archiver.v1.Task_Status;
 
   @IsNotEmpty()
   @Column()

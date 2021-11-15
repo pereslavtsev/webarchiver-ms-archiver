@@ -4,4 +4,4 @@ import { PickType } from '@nestjs/mapped-types';
 
 export class GetTaskDto
   extends PickType(Task, ['id'] as const)
-  implements archiver.GetTaskRequest {}
+  implements archiver.v1.GetTaskRequest {}

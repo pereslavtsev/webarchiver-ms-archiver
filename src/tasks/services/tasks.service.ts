@@ -24,7 +24,7 @@ export class TasksService extends LoggableProvider {
     return this.tasksRepository.findOneOrFail(id);
   }
 
-  findAll({ pageSize, pageToken }: archiver.ListTasksRequest) {
+  findAll({ pageSize, pageToken }: archiver.v1.ListTasksRequest) {
     const queryBuilder = this.tasksRepository.createQueryBuilder('task');
 
     const paginator = buildPaginator({

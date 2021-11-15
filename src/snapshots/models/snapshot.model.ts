@@ -12,7 +12,7 @@ import { Task } from '@archiver/tasks';
 
 @Entity('snapshots')
 export class Snapshot {
-  static Status = archiver.Snapshot_Status;
+  static Status = archiver.v1.Snapshot_Status;
 
   @IsUUID()
   @PrimaryGeneratedColumn('uuid')
@@ -30,7 +30,7 @@ export class Snapshot {
     enumName: 'snapshot_status',
     default: Snapshot.Status.PENDING,
   })
-  readonly status: archiver.Snapshot_Status;
+  readonly status: archiver.v1.Snapshot_Status;
 
   @CreateDateColumn()
   readonly createdAt: Date;

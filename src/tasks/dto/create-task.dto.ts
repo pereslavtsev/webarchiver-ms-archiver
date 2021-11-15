@@ -4,4 +4,4 @@ import type { archiver } from '@webarchiver/protoc';
 
 export class CreateTaskDto
   extends PickType(Task, ['url', 'quote', 'status', 'desiredDate'] as const)
-  implements archiver.CreateTaskRequest {}
+  implements archiver.v1.CreateTaskRequest {}

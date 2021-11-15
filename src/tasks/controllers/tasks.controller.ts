@@ -11,14 +11,14 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { Snapshot } from '@archiver/snapshots';
 
 @Controller('tasks')
-@archiver.ArchiverServiceControllerMethods()
+@archiver.v1.ArchiverServiceControllerMethods()
 export class TasksController
   extends LoggableProvider
-  implements archiver.ArchiverServiceController
+  implements archiver.v1.ArchiverServiceController
 {
   protected readonly subscriptions: Map<
-    archiver.Task['id'],
-    Subject<archiver.Task>
+    archiver.v1.Task['id'],
+    Subject<archiver.v1.Task>
   > = new Map();
 
   constructor(
@@ -33,7 +33,7 @@ export class TasksController
     pageSize,
     pageToken,
     orderBy,
-  }: ListTasksDto): Promise<archiver.ListTasksResponse> {
+  }: ListTasksDto): Promise<archiver.v1.ListTasksResponse> {
     const { data, cursor } = await this.tasksService.findAll({
       pageSize,
       pageToken,
@@ -46,7 +46,7 @@ export class TasksController
   }
 
   @UsePipes(new ValidationPipe())
-  createTask(data: CreateTaskDto): Observable<archiver.Task> {
+  createTask(data: CreateTaskDto): Observable<archiver.v1.Task> {
     return from(this.tasksService.create(data)).pipe(map(this.transformTask));
   }
 
@@ -76,7 +76,7 @@ export class TasksController
     createdAt,
     updatedAt,
     snapshots,
-  }: Task): archiver.Task {
+  }: Task): archiver.v1.Task {
     return {
       id,
       quote,
@@ -93,7 +93,7 @@ export class TasksController
           updatedAt,
           uri,
           capturedAt,
-        }: Snapshot): archiver.Snapshot => {
+        }: Snapshot): archiver.v1.Snapshot => {
           return {
             id,
             status,
@@ -111,8 +111,8 @@ export class TasksController
   createTaskStream(
     data: CreateTaskDto,
     metadata: Metadata,
-  ): Observable<archiver.Task> {
-    const subject = new Subject<archiver.Task>();
+  ): Observable<archiver.v1.Task> {
+    const subject = new Subject<archiver.v1.Task>();
     from(this.tasksService.create(data))
       .pipe(map(this.transformTask))
       .subscribe((task) => {
@@ -124,12 +124,12 @@ export class TasksController
   }
 
   @UsePipes(new ValidationPipe())
-  getTask({ id }: GetTaskDto): Observable<archiver.Task> {
+  getTask({ id }: GetTaskDto): Observable<archiver.v1.Task> {
     return from(this.tasksService.findById(id)).pipe(map(this.transformTask));
   }
 
   @UsePipes(new ValidationPipe())
-  cancelTask({ id }: GetTaskDto): Observable<archiver.Task> {
+  cancelTask({ id }: GetTaskDto): Observable<archiver.v1.Task> {
     return from(this.tasksService.setCancelled(id)).pipe(
       map(this.transformTask),
     );
