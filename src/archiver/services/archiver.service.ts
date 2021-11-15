@@ -5,11 +5,11 @@ import type { Task } from '@archiver/tasks';
 import { TasksService } from '@archiver/tasks';
 import type { MementosResponse } from '@mementoweb/client/lib/classes';
 import { Snapshot, SnapshotsService } from '@archiver/snapshots';
-import { CoreProvider } from '@archiver/shared';
+import { LoggableProvider } from '@pereslavtsev/webarchiver-misc';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 
 @Injectable()
-export class ArchiverService extends CoreProvider {
+export class ArchiverService extends LoggableProvider {
   constructor(
     @RootLogger() rootLogger: Bunyan,
     @InjectMementoClient()

@@ -7,14 +7,14 @@ import {
 import type { Job } from 'bull';
 import type { Task } from '@archiver/tasks';
 import { TIMETRAVEL_QUEUE } from '../archiver.constants';
-import { CoreProvider } from '@archiver/shared';
+import { LoggableProvider } from '@pereslavtsev/webarchiver-misc';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 import { ArchiverService } from '../services';
 import { TasksService } from '@archiver/tasks';
 import { Snapshot, SnapshotsService } from '@archiver/snapshots';
 
 @Processor(TIMETRAVEL_QUEUE)
-export class ArchiverConsumer extends CoreProvider {
+export class ArchiverConsumer extends LoggableProvider {
   constructor(
     @RootLogger() rootLogger: Bunyan,
     private archiverService: ArchiverService,

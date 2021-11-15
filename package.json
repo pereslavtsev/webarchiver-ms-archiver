@@ -37,6 +37,7 @@
     "@nestjs/microservices": "^8.2.0",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/typeorm": "^8.0.2",
+    "@pereslavtsev/webarchiver-misc": "^1.0.0",
     "bull": "3.3",
     "cheerio": "^1.0.0-rc.10",
     "class-transformer": "^0.4.0",

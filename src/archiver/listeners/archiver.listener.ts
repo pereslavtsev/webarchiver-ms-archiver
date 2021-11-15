@@ -4,7 +4,7 @@ import type { Task } from '@archiver/tasks';
 import { InjectQueue } from '@nestjs/bull';
 import { TIMETRAVEL_QUEUE } from '../archiver.constants';
 import { Queue } from 'bull';
-import { CoreProvider } from '@archiver/shared';
+import { LoggableProvider } from '@pereslavtsev/webarchiver-misc';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 import {
   OnSnapshotChecked,
@@ -13,7 +13,7 @@ import {
 } from '@archiver/snapshots';
 
 @Injectable()
-export class ArchiverListener extends CoreProvider {
+export class ArchiverListener extends LoggableProvider {
   constructor(
     @RootLogger() rootLogger: Bunyan,
     @InjectQueue(TIMETRAVEL_QUEUE)

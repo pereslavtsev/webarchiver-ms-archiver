@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectTasksRepository } from '../tasks.decorators';
 import type { TasksRepository } from '../tasks.types';
 import { Task } from '../models';
-import { CoreProvider } from '@archiver/shared';
+import { LoggableProvider } from '@pereslavtsev/webarchiver-misc';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 import type { archiver } from '@webarchiver/protoc';
 import { buildPaginator } from 'typeorm-cursor-pagination';
@@ -10,7 +10,7 @@ import { Snapshot } from '@archiver/snapshots';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
-export class TasksService extends CoreProvider {
+export class TasksService extends LoggableProvider {
   constructor(
     @RootLogger() rootLogger: Bunyan,
     @InjectTasksRepository()

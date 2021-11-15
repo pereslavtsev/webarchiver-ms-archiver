@@ -1,6 +1,6 @@
 import { Controller, UsePipes, ValidationPipe } from '@nestjs/common';
 import { archiver, toTimestamp } from '@webarchiver/protoc';
-import { CoreProvider } from '@archiver/shared';
+import { LoggableProvider } from '@pereslavtsev/webarchiver-misc';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 import { TasksService } from '../services';
 import { Metadata } from '@grpc/grpc-js';
@@ -13,7 +13,7 @@ import { Snapshot } from '@archiver/snapshots';
 @Controller('tasks')
 @archiver.ArchiverServiceControllerMethods()
 export class TasksController
-  extends CoreProvider
+  extends LoggableProvider
   implements archiver.ArchiverServiceController
 {
   protected readonly subscriptions: Map<

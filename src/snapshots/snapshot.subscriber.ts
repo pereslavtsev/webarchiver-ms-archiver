@@ -4,12 +4,12 @@ import {
   EventSubscriber,
 } from 'typeorm';
 import { Snapshot } from './models';
-import { CoreProvider } from '@archiver/shared';
+import { LoggableProvider } from '@pereslavtsev/webarchiver-misc';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 
 @EventSubscriber()
 export class SnapshotSubscriber
-  extends CoreProvider
+  extends LoggableProvider
   implements EntitySubscriberInterface<Snapshot>
 {
   constructor(@RootLogger() rootLogger: Bunyan, connection: Connection) {

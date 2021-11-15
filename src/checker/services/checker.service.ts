@@ -1,4 +1,4 @@
-import { CoreProvider } from '@archiver/shared';
+import { LoggableProvider } from '@pereslavtsev/webarchiver-misc';
 import { Injectable } from '@nestjs/common';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 import { Snapshot } from '@archiver/snapshots';
@@ -9,7 +9,7 @@ import cheerio from 'cheerio';
 import parse from 'url-parse';
 
 @Injectable()
-export class CheckerService extends CoreProvider {
+export class CheckerService extends LoggableProvider {
   constructor(
     @RootLogger() rootLogger: Bunyan,
     @InjectContext() private readonly browserContext: BrowserContext,

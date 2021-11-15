@@ -5,7 +5,7 @@ import {
   Process,
   Processor,
 } from '@nestjs/bull';
-import { CoreProvider } from '@archiver/shared';
+import { LoggableProvider } from '@pereslavtsev/webarchiver-misc';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 import { Job } from 'bull';
 import { CheckerService } from '../services';
@@ -13,7 +13,7 @@ import { Task, TasksService } from '@archiver/tasks';
 import { Snapshot, SnapshotsService } from '@archiver/snapshots';
 
 @Processor(CHECKER_QUEUE)
-export class CheckerConsumer extends CoreProvider {
+export class CheckerConsumer extends LoggableProvider {
   constructor(
     @RootLogger() rootLogger: Bunyan,
     private checkerService: CheckerService,

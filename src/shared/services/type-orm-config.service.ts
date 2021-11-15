@@ -4,12 +4,12 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { ConfigType } from '@nestjs/config';
 
 import { database } from '../config';
-import { CoreProvider } from '../core.provider';
+import { LoggableProvider } from '@pereslavtsev/webarchiver-misc';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 
 @Injectable()
 export class TypeOrmConfigService
-  extends CoreProvider
+  extends LoggableProvider
   implements TypeOrmOptionsFactory
 {
   constructor(

@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Snapshot } from '../models';
 import { InjectSnapshotsRepository } from '../snapshots.decorators';
-import { CoreProvider } from '@archiver/shared';
+import { LoggableProvider } from '@pereslavtsev/webarchiver-misc';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
-export class SnapshotsService extends CoreProvider {
+export class SnapshotsService extends LoggableProvider {
   constructor(
     @RootLogger() rootLogger: Bunyan,
     @InjectSnapshotsRepository()
