@@ -1,7 +1,7 @@
 import { Transport, ClientOptions } from '@nestjs/microservices';
 import { archiver } from '@webarchiver/protoc';
 
-const port = process.env.PORT || 50051;
+const port = process.env.PORT || 50052;
 
 export const grpcClientOptions: ClientOptions = {
   transport: Transport.GRPC,
