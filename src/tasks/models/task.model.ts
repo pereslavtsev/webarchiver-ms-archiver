@@ -9,6 +9,7 @@ import {
 import { IsNotEmpty, IsUrl, IsUUID } from 'class-validator';
 import { Snapshot } from '@archiver/snapshots';
 import { archiver } from '@webarchiver/protoc';
+import { TransformDate } from '@archiver/shared';
 
 @Entity('tasks')
 export class Task {
@@ -23,6 +24,7 @@ export class Task {
   readonly url: string;
 
   @Column('timestamp')
+  @TransformDate()
   readonly desiredDate: Date;
 
   @Column({
@@ -38,9 +40,11 @@ export class Task {
   readonly quote: string;
 
   @CreateDateColumn()
+  @TransformDate()
   readonly createdAt: Date;
 
   @UpdateDateColumn()
+  @TransformDate()
   readonly updatedAt: Date;
 
   @OneToMany(() => Snapshot, (snapshot) => snapshot.task, {

@@ -8,6 +8,8 @@ import type { archiver } from '@webarchiver/protoc';
 import { buildPaginator } from 'typeorm-cursor-pagination';
 import { Snapshot } from '@archiver/snapshots';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { plainToClass } from 'class-transformer';
+import { CreateTaskDto } from '../dto';
 
 @Injectable()
 export class TasksService extends LoggableProvider {
@@ -20,11 +22,12 @@ export class TasksService extends LoggableProvider {
     super(rootLogger);
   }
 
-  findById(id: Task['id']): Promise<Task> {
-    return this.tasksRepository.findOneOrFail(id);
+  async findById(id: Task['id']): Promise<Task> {
+    const task = await this.tasksRepository.findOneOrFail(id);
+    return plainToClass(Task, task);
   }
 
-  findAll({ pageSize, pageToken }: archiver.v1.ListTasksRequest) {
+  async findAll({ pageSize, pageToken }: archiver.v1.ListTasksRequest) {
     const queryBuilder = this.tasksRepository.createQueryBuilder('task');
 
     const paginator = buildPaginator({
@@ -37,15 +40,18 @@ export class TasksService extends LoggableProvider {
       },
     });
 
-    return paginator.paginate(queryBuilder);
+    const { data, ...result } = await paginator.paginate(queryBuilder);
+
+    return { data: plainToClass(Task, data), ...result };
   }
 
   private async setStatus(taskId: Task['id'], status: Task['status']) {
     const task = await this.findById(taskId);
-    return this.tasksRepository.save({
+    const updatedTask = await this.tasksRepository.save({
       ...task,
       status,
     });
+    return plainToClass(Task, updatedTask);
   }
 
   async setInProgress(taskId: Task['id']): Promise<Task> {
@@ -72,20 +78,16 @@ export class TasksService extends LoggableProvider {
     return task;
   }
 
-  async create(
-    data: Pick<Task, 'url' | 'quote' | 'desiredDate'>,
-  ): Promise<Task> {
-    // @ts-ignore
-    data.desiredDate = new Date();
+  async create(data: CreateTaskDto): Promise<Task> {
     const task = await this.tasksRepository.save(data);
     this.eventEmitter.emit('task.created', task);
-    return task;
+    return plainToClass(Task, task);
   }
 
   async addSnapshots(taskId: Task['id'], snapshots: Snapshot[]) {
     const task = await this.findById(taskId);
     const updatedTask = await this.tasksRepository.save({ ...task, snapshots });
     this.eventEmitter.emit('snapshots.received', { ...updatedTask, snapshots });
-    return updatedTask;
+    return plainToClass(Task, updatedTask);
   }
 }

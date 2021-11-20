@@ -1,14 +1,13 @@
 import { Controller, UsePipes, ValidationPipe } from '@nestjs/common';
-import { archiver, toTimestamp } from '@webarchiver/protoc';
+import { archiver } from '@webarchiver/protoc';
 import { LoggableProvider } from '@pereslavtsev/webarchiver-misc';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 import { TasksService } from '../services';
-import { Metadata } from '@grpc/grpc-js';
 import { CreateTaskDto, GetTaskDto, ListTasksDto } from '../dto';
-import { from, map, Observable, Subject } from 'rxjs';
+import { from, Observable, Subject } from 'rxjs';
 import { Task } from '../models';
 import { OnEvent } from '@nestjs/event-emitter';
-import { Snapshot } from '@archiver/snapshots';
+import { plainToClass } from 'class-transformer';
 
 @Controller('tasks')
 @archiver.v1.ArchiverServiceControllerMethods()
@@ -46,8 +45,8 @@ export class TasksController
   }
 
   @UsePipes(new ValidationPipe())
-  createTask(data: CreateTaskDto): Observable<archiver.v1.Task> {
-    return from(this.tasksService.create(data)).pipe(map(this.transformTask));
+  createTask(data: CreateTaskDto): Promise<archiver.v1.Task> {
+    return this.tasksService.create(plainToClass(CreateTaskDto, data));
   }
 
   @OnEvent('task.*')
@@ -56,7 +55,7 @@ export class TasksController
     if (!subject) {
       return;
     }
-    subject.next(this.transformTask(task));
+    subject.next(task);
 
     switch (task.status) {
       case Task.Status.DONE:
@@ -67,71 +66,25 @@ export class TasksController
     }
   }
 
-  private transformTask({
-    id,
-    quote,
-    url,
-    desiredDate,
-    status,
-    createdAt,
-    updatedAt,
-    snapshots,
-  }: Task): archiver.v1.Task {
-    return {
-      id,
-      quote,
-      url,
-      desiredDate: toTimestamp(desiredDate) as any,
-      status,
-      createdAt: toTimestamp(createdAt) as any,
-      updatedAt: toTimestamp(updatedAt) as any,
-      snapshots: snapshots?.map(
-        ({
-          id,
-          status,
-          createdAt,
-          updatedAt,
-          uri,
-          capturedAt,
-        }: Snapshot): archiver.v1.Snapshot => {
-          return {
-            id,
-            status,
-            createdAt: toTimestamp(createdAt) as any,
-            updatedAt: toTimestamp(updatedAt) as any,
-            uri,
-            capturedAt: toTimestamp(capturedAt) as any,
-          };
-        },
-      ),
-    };
-  }
-
   @UsePipes(new ValidationPipe())
-  createTaskStream(
-    data: CreateTaskDto,
-    metadata: Metadata,
-  ): Observable<archiver.v1.Task> {
+  createTaskStream(data: CreateTaskDto): Observable<archiver.v1.Task> {
     const subject = new Subject<archiver.v1.Task>();
-    from(this.tasksService.create(data))
-      .pipe(map(this.transformTask))
-      .subscribe((task) => {
-        this.subscriptions.set(task.id, subject);
-        subject.next(task);
-      });
+
+    from(this.tasksService.create(data)).subscribe((task) => {
+      this.subscriptions.set(task.id, subject);
+      subject.next(task);
+    });
 
     return subject.asObservable();
   }
 
   @UsePipes(new ValidationPipe())
-  getTask({ id }: GetTaskDto): Observable<archiver.v1.Task> {
-    return from(this.tasksService.findById(id)).pipe(map(this.transformTask));
+  getTask({ id }: GetTaskDto): Promise<archiver.v1.Task> {
+    return this.tasksService.findById(id);
   }
 
   @UsePipes(new ValidationPipe())
-  cancelTask({ id }: GetTaskDto): Observable<archiver.v1.Task> {
-    return from(this.tasksService.setCancelled(id)).pipe(
-      map(this.transformTask),
-    );
+  cancelTask({ id }: GetTaskDto): Promise<archiver.v1.Task> {
+    return this.tasksService.setCancelled(id);
   }
 }

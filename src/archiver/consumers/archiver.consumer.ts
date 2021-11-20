@@ -28,7 +28,11 @@ export class ArchiverConsumer extends LoggableProvider {
   async onActive(job: Job<Task>) {
     const log = this.log.child({ reqId: job.id });
     const { data } = job;
-    log.debug(`fetching mementos for uri ${data.url}...`);
+    log.debug(
+      `fetching mementos for uri ${data.url} on ${new Date(
+        data.desiredDate,
+      ).toLocaleDateString()}...`,
+    );
     await this.tasksService.setInProgress(data.id);
   }
 
