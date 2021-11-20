@@ -10,6 +10,7 @@
   "license": "ISC",
   "scripts": {
     "prebuild": "rimraf dist",
+    "prepare": "husky install",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -55,6 +56,8 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@commitlint/cli": "^15.0.0",
+    "@commitlint/config-conventional": "^15.0.0",
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
@@ -71,6 +74,7 @@
     "eslint": "^7.30.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
+    "husky": "^7.0.4",
     "jest": "27.0.6",
     "prettier": "^2.3.2",
     "supertest": "^6.1.3",
