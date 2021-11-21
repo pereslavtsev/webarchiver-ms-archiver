@@ -70,10 +70,12 @@ export class TasksController
   createTaskStream(data: CreateTaskDto): Observable<archiver.v1.Task> {
     const subject = new Subject<archiver.v1.Task>();
 
-    from(this.tasksService.create(data)).subscribe((task) => {
-      this.subscriptions.set(task.id, subject);
-      subject.next(task);
-    });
+    from(this.tasksService.create(plainToClass(CreateTaskDto, data))).subscribe(
+      (task) => {
+        this.subscriptions.set(task.id, subject);
+        subject.next(task);
+      },
+    );
 
     return subject.asObservable();
   }

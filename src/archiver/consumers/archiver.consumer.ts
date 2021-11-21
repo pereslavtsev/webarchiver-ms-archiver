@@ -3,6 +3,7 @@ import {
   Process,
   OnQueueActive,
   OnQueueCompleted,
+  OnQueueFailed,
 } from '@nestjs/bull';
 import type { Job } from 'bull';
 import type { Task } from '@archiver/tasks';
@@ -11,7 +12,7 @@ import { LoggableProvider } from '@pereslavtsev/webarchiver-misc';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 import { ArchiverService } from '../services';
 import { TasksService } from '@archiver/tasks';
-import { Snapshot, SnapshotsService } from '@archiver/snapshots';
+import { Snapshot } from '@archiver/snapshots';
 
 @Processor(TIMETRAVEL_QUEUE)
 export class ArchiverConsumer extends LoggableProvider {
@@ -19,7 +20,6 @@ export class ArchiverConsumer extends LoggableProvider {
     @RootLogger() rootLogger: Bunyan,
     private archiverService: ArchiverService,
     private tasksService: TasksService,
-    private snapshotsService: SnapshotsService,
   ) {
     super(rootLogger);
   }
@@ -46,19 +46,19 @@ export class ArchiverConsumer extends LoggableProvider {
     );
   }
 
+  @OnQueueFailed()
+  async handleFailed(job: Job<Task>, err: Error) {
+    const { data: task } = job;
+    const log = this.log.child({ reqId: job.id });
+    log.error(err);
+    await this.tasksService.setFailed(task.id);
+  }
+
   @Process()
   async process(job: Job<Task>) {
     const log = this.log.child({ reqId: job.id });
-    const { data } = job;
-    try {
-      return this.archiverService.run(data);
-    } catch (error) {
-      log.error(error);
-      await Promise.all([
-        this.tasksService.setFailed(data.id),
-        this.snapshotsService.cancelPending(data),
-        job.moveToFailed({ message: (error as Error).message }),
-      ]);
-    }
+    const { data: task } = job;
+    log.debug(`processing task...`);
+    return this.archiverService.run(task);
   }
 }

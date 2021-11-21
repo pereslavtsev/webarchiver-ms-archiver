@@ -88,6 +88,9 @@ export class TasksService extends LoggableProvider {
     const task = await this.findById(taskId);
     const updatedTask = await this.tasksRepository.save({ ...task, snapshots });
     this.eventEmitter.emit('snapshots.received', { ...updatedTask, snapshots });
+    snapshots.forEach((snapshot) =>
+      this.eventEmitter.emit('snapshot.created', snapshot),
+    );
     return plainToClass(Task, updatedTask);
   }
 }

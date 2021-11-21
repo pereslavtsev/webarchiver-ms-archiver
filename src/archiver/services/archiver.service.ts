@@ -33,7 +33,10 @@ export class ArchiverService extends LoggableProvider {
       mementos: { closest },
     } = await this.client.uri(task.url).mementos(task.desiredDate);
     const snapshots = this.transformSnapshots(closest);
-    await this.tasksService.addSnapshots(task.id, snapshots);
+    await this.tasksService.addSnapshots(
+      task.id,
+      snapshots.map((snapshot) => ({ ...snapshot, taskId: task.id })),
+    );
     return snapshots;
   }
 }

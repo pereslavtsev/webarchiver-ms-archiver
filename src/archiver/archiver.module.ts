@@ -11,7 +11,10 @@ import { SnapshotsModule } from '@archiver/snapshots';
 
 @Module({
   imports: [
-    MementoModule.forRoot('https://timetravel.mementoweb.org'),
+    MementoModule.forRoot({
+      baseURL: 'https://timetravel.mementoweb.org',
+      timeout: 3 * 60 * 1000,
+    }),
     BullModule.registerQueue({
       name: TIMETRAVEL_QUEUE,
     }),

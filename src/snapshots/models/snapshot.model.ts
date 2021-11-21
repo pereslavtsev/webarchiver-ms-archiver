@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -9,6 +10,7 @@ import {
 import { IsUUID } from 'class-validator';
 import { archiver } from '@webarchiver/protoc';
 import { Task } from '@archiver/tasks';
+import { TransformDate } from '@archiver/shared';
 
 @Entity('snapshots')
 export class Snapshot {
@@ -22,6 +24,7 @@ export class Snapshot {
   readonly uri: string;
 
   @Column()
+  @TransformDate()
   readonly capturedAt: Date;
 
   @Column({
@@ -33,14 +36,21 @@ export class Snapshot {
   readonly status: archiver.v1.Snapshot_Status;
 
   @CreateDateColumn()
+  @TransformDate()
   readonly createdAt: Date;
 
   @UpdateDateColumn()
+  @TransformDate()
   readonly updatedAt: Date;
+
+  @IsUUID()
+  @Column('uuid')
+  readonly taskId: Task['id'];
 
   @ManyToOne(() => Task, (task) => task.snapshots, {
     onDelete: 'CASCADE',
     lazy: true,
   })
+  @JoinColumn({ name: 'task_id' })
   readonly task: Task | Promise<Task>;
 }
