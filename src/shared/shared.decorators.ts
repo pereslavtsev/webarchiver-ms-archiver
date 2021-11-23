@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { toTimestamp } from '@webarchiver/protoc';
+import { toTimestamp } from '@pereslavtsev/webarchiver-protoc';
 
 export function TransformDate() {
   return Transform(
