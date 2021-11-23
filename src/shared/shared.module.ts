@@ -5,7 +5,7 @@ import { LOGGER } from './logger';
 import { ConfigModule } from '@nestjs/config';
 import * as config from './config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TypeOrmConfigService } from './services';
+import { BullConfigService, TypeOrmConfigService } from './services';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Global()
@@ -19,11 +19,8 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       isGlobal: true,
     }),
     EventEmitterModule.forRoot({ wildcard: true }),
-    BullModule.forRoot({
-      redis: {
-        host: 'localhost',
-        port: 6379,
-      },
+    BullModule.forRootAsync({
+      useClass: BullConfigService,
     }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
