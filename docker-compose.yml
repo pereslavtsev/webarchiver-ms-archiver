@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  db:
+    container_name: "ms-archiver-db"
+    image: "postgres:13.5-alpine3.14"
+    environment:
+      - POSTGRES_PASSWORD=webarchiver
+      - POSTGRES_USER=webarchiver
+      - POSTGRES_DB=webarchiver
+    tty: true
+  redis:
+    container_name: "ms-archiver-redis"
+    image: "redis:6.2.6-alpine3.14"
+    tty: true
+  server:
+    container_name: "ms-archiver-server"
+    build:
+      context: .
+      args:
+        - GITHUB_TOKEN=${GITHUB_TOKEN}
+    environment:
+      - DATABASE_URL=postgres://webarchiver:webarchiver@db:5432/webarchiver
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "10002:10002"
+    tty: true
