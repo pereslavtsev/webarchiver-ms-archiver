@@ -49,6 +49,25 @@ export class SnapshotsController
     }
   }
 
+  @OnEvent('task.*')
+  handleTaskEvents(task: Task) {
+    const { status } = task;
+
+    const subject = this.subscriptions.get(task.id);
+    if (!subject) {
+      return;
+    }
+
+    switch (status) {
+      case Task.Status.FAILED:
+      case Task.Status.CANCELLED:
+      case Task.Status.DONE: {
+        subject.complete();
+        this.subscriptions.delete(task.id);
+      }
+    }
+  }
+
   @UsePipes(new ValidationPipe())
   getSnapshotsStream({
     taskId,
