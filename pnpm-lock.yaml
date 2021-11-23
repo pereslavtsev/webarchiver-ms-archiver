@@ -20,6 +20,7 @@ specifiers:
   '@nestjs/testing': ^8.0.0
   '@nestjs/typeorm': ^8.0.2
   '@pereslavtsev/webarchiver-misc': ^1.0.0
+  '@pereslavtsev/webarchiver-protoc': ^1.0.0
   '@types/bull': ^3.15.5
   '@types/express': ^4.17.13
   '@types/jest': ^26.0.24
@@ -73,6 +74,7 @@ dependencies:
   '@nestjs/platform-express': 8.1.2_bbf59b1cbf49bba2b2f47e404ee3cb27
   '@nestjs/typeorm': 8.0.2_12346420c5d0822584d78b786936ea28
   '@pereslavtsev/webarchiver-misc': 1.0.0_@nestjs+common@8.1.2
+  '@pereslavtsev/webarchiver-protoc': 1.0.0_886d8c871034ae6bbc578dc554cbd762
   bull: 3.3.10
   cheerio: 1.0.0-rc.10
   class-transformer: 0.4.0
@@ -1330,6 +1332,21 @@ packages:
       uuid: 8.3.2
     optionalDependencies:
       '@grpc/grpc-js': 1.4.4
+    dev: false
+
+  /@pereslavtsev/webarchiver-protoc/1.0.0_886d8c871034ae6bbc578dc554cbd762:
+    resolution: {integrity: sha512-c+3U35w/IDqK/IAA8njSiD973rkPsqqA2Hj+3ghKieGJ9xdTWWIYnfB00tTaLaQ+mcR734jiE8eJgmdhZ0Tnbg==, tarball: download/@pereslavtsev/webarchiver-protoc/1.0.0/2b52e416f1b88e2003611cf9b043fbbd70e4cecacadd87e25b5cd878e4c6968d}
+    peerDependencies:
+      '@grpc/grpc-js': ^1.4.4
+      '@grpc/proto-loader': ^0.6.6
+      '@nestjs/microservices': ^8.2.0
+      rxjs: ^7.4.0
+    dependencies:
+      '@grpc/grpc-js': 1.4.4
+      '@nestjs/microservices': 8.2.0_2749f80d754f150745d8f456176de7c2
+      long: 5.1.0
+      protobufjs: 6.11.2
+      rxjs: 7.4.0
     dev: false
 
   /@protobufjs/aspromise/1.1.2:
@@ -5074,6 +5091,10 @@ packages:
 
   /long/4.0.0:
     resolution: {integrity: sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==}
+    dev: false
+
+  /long/5.1.0:
+    resolution: {integrity: sha512-eNc10JP6ezXp/qxXZlKS4OHAKNae3je9LUkjmXPDEa+Iidlz0n4nFi/9LT+GOgcayMWhykLoISN+v0THeOiWQQ==}
     dev: false
 
   /lowercase-keys/1.0.1:
