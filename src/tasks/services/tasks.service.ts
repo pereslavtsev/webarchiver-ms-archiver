@@ -4,12 +4,11 @@ import type { TasksRepository } from '../tasks.types';
 import { Task } from '../models';
 import { LoggableProvider } from '@pereslavtsev/webarchiver-misc';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
-import type { archiver } from '@webarchiver/protoc';
 import { buildPaginator } from 'typeorm-cursor-pagination';
 import { Snapshot } from '@archiver/snapshots';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { plainToClass } from 'class-transformer';
-import { CreateTaskDto } from '../dto';
+import { CreateTaskDto, ListTasksDto } from '../dto';
 
 @Injectable()
 export class TasksService extends LoggableProvider {
@@ -27,7 +26,7 @@ export class TasksService extends LoggableProvider {
     return plainToClass(Task, task);
   }
 
-  async findAll({ pageSize, pageToken }: archiver.v1.ListTasksRequest) {
+  async findAll({ pageSize, pageToken }: ListTasksDto) {
     const queryBuilder = this.tasksRepository.createQueryBuilder('task');
 
     const paginator = buildPaginator({

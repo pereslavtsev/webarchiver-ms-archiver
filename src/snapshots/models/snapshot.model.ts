@@ -8,13 +8,13 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { IsUUID } from 'class-validator';
-import { archiver } from '@webarchiver/protoc';
+import { snapshots } from '@pereslavtsev/webarchiver-protoc';
 import { Task } from '@archiver/tasks';
 import { TransformDate } from '@archiver/shared';
 
 @Entity('snapshots')
 export class Snapshot {
-  static Status = archiver.v1.Snapshot_Status;
+  static Status = snapshots.Snapshot_Status;
 
   @IsUUID()
   @PrimaryGeneratedColumn('uuid')
@@ -33,7 +33,7 @@ export class Snapshot {
     enumName: 'snapshot_status',
     default: Snapshot.Status.PENDING,
   })
-  readonly status: archiver.v1.Snapshot_Status;
+  readonly status: snapshots.Snapshot_Status;
 
   @CreateDateColumn()
   @TransformDate()

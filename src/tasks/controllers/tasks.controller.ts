@@ -1,5 +1,5 @@
 import { Controller, UsePipes, ValidationPipe } from '@nestjs/common';
-import { archiver } from '@webarchiver/protoc';
+import { archiver } from '@pereslavtsev/webarchiver-protoc';
 import { LoggableProvider } from '@pereslavtsev/webarchiver-misc';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 import { TasksService } from '../services';
@@ -10,14 +10,14 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { plainToClass } from 'class-transformer';
 
 @Controller('tasks')
-@archiver.v1.ArchiverServiceControllerMethods()
+@archiver.ArchiverServiceControllerMethods()
 export class TasksController
   extends LoggableProvider
-  implements archiver.v1.ArchiverServiceController
+  implements archiver.ArchiverServiceController
 {
   protected readonly subscriptions: Map<
-    archiver.v1.Task['id'],
-    Subject<archiver.v1.Task>
+    archiver.ArchiverTask['id'],
+    Subject<archiver.ArchiverTask>
   > = new Map();
 
   constructor(
@@ -32,7 +32,7 @@ export class TasksController
     pageSize,
     pageToken,
     orderBy,
-  }: ListTasksDto): Promise<archiver.v1.ListTasksResponse> {
+  }: ListTasksDto): Promise<archiver.ListArchiverTasksResponse> {
     const { data, cursor } = await this.tasksService.findAll({
       pageSize,
       pageToken,
@@ -45,7 +45,7 @@ export class TasksController
   }
 
   @UsePipes(new ValidationPipe())
-  createTask(data: CreateTaskDto): Promise<archiver.v1.Task> {
+  createTask(data: CreateTaskDto): Promise<archiver.ArchiverTask> {
     return this.tasksService.create(plainToClass(CreateTaskDto, data));
   }
 
@@ -67,8 +67,8 @@ export class TasksController
   }
 
   @UsePipes(new ValidationPipe())
-  createTaskStream(data: CreateTaskDto): Observable<archiver.v1.Task> {
-    const subject = new Subject<archiver.v1.Task>();
+  createTaskStream(data: CreateTaskDto): Observable<archiver.ArchiverTask> {
+    const subject = new Subject<archiver.ArchiverTask>();
 
     from(this.tasksService.create(plainToClass(CreateTaskDto, data))).subscribe(
       (task) => {
@@ -81,12 +81,12 @@ export class TasksController
   }
 
   @UsePipes(new ValidationPipe())
-  getTask({ id }: GetTaskDto): Promise<archiver.v1.Task> {
+  getTask({ id }: GetTaskDto): Promise<archiver.ArchiverTask> {
     return this.tasksService.findById(id);
   }
 
   @UsePipes(new ValidationPipe())
-  cancelTask({ id }: GetTaskDto): Promise<archiver.v1.Task> {
+  cancelTask({ id }: GetTaskDto): Promise<archiver.ArchiverTask> {
     return this.tasksService.setCancelled(id);
   }
 }

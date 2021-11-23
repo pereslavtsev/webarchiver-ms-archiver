@@ -1,24 +1,25 @@
 import { Controller, UsePipes, ValidationPipe } from '@nestjs/common';
 import { LoggableProvider } from '@pereslavtsev/webarchiver-misc';
-import { archiver } from '@webarchiver/protoc';
+import { archiver, snapshots } from '@pereslavtsev/webarchiver-protoc';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 import { from, Observable, Subject } from 'rxjs';
 import { GetSnapshotsDto } from '../dto';
 import { SnapshotsService } from '../services';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Snapshot } from '../models';
+import { Task } from '@archiver/tasks';
 
-const { SnapshotsServiceControllerMethods } = archiver.v1;
+const { SnapshotsServiceControllerMethods } = snapshots;
 
 @Controller('snapshots')
 @SnapshotsServiceControllerMethods()
 export class SnapshotsController
   extends LoggableProvider
-  implements archiver.v1.SnapshotsServiceController
+  implements snapshots.SnapshotsServiceController
 {
   protected readonly subscriptions: Map<
-    archiver.v1.Task['id'],
-    Subject<archiver.v1.Snapshot>
+    archiver.ArchiverTask['id'],
+    Subject<snapshots.Snapshot>
   > = new Map();
 
   constructor(
@@ -71,7 +72,7 @@ export class SnapshotsController
   @UsePipes(new ValidationPipe())
   getSnapshotsStream({
     taskId,
-  }: GetSnapshotsDto): Observable<archiver.v1.Snapshot> {
+  }: GetSnapshotsDto): Observable<snapshots.Snapshot> {
     if (!this.subscriptions.has(taskId)) {
       this.subscriptions.set(taskId, new Subject());
     }

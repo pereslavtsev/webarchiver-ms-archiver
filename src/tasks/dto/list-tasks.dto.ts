@@ -1,7 +1,7 @@
-import type { archiver } from '@webarchiver/protoc';
+import type { archiver } from '@pereslavtsev/webarchiver-protoc';
 import { Max, Min } from 'class-validator';
 
-export class ListTasksDto implements archiver.v1.ListTasksRequest {
+export class ListTasksDto implements archiver.ListArchiverTasksRequest {
   @Min(1)
   @Max(50)
   readonly pageSize: number;

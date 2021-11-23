@@ -19,7 +19,7 @@ export class CheckerService extends LoggableProvider {
 
   private async gotoPage(uri: Snapshot['uri']) {
     const page = await this.browserContext.newPage();
-    await page.goto(uri, { waitUntil: 'networkidle2', timeout: 60 * 1000 });
+    await page.goto(uri, { waitUntil: 'networkidle2', timeout: 5 * 60 * 1000 });
     return page;
   }
 
@@ -27,6 +27,19 @@ export class CheckerService extends LoggableProvider {
     const { hostname } = parse(page.url());
 
     switch (hostname) {
+      case 'web.archive.org': {
+        const iframe = await page.$('#playback');
+
+        if (!iframe) {
+          return page.content();
+        }
+
+        const contentFrame = await iframe.contentFrame();
+
+        const content = await contentFrame.content();
+        // TODO: https://web.archive.org/web/20150908182406if_/http://www.microsoft.com:80/resources/documentation/windows/xp/all/proddocs/en-us/choosing_between_ntfs_fat_and_fat32.mspx?mfr=true
+        return content;
+      }
       case 'arquivo.pt': {
         const iframe = await page.$('#replay_iframe');
         const contentFrame = await iframe.contentFrame();
@@ -51,7 +64,9 @@ export class CheckerService extends LoggableProvider {
     const content = await this.getPageContent(page);
 
     const $ = cheerio.load(content);
-    const res = new RegExp(quote, 'ig').exec($.text());
+    const text = $.text();
+
+    const res = new RegExp(quote, 'ig').exec(text);
 
     await page.close();
 
