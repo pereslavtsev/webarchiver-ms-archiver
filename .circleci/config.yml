@@ -29,6 +29,8 @@ jobs:
           POSTGRES_DB: postgres
           POSTGRES_PASSWORD: postgres
       - image: circleci/redis:6.2.6-alpine3.14
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@127.0.0.1/postgres
     steps:
       - run: curl -f https://get.pnpm.io/v6.16.js | sudo node - add --global pnpm@6
       - run: pnpm config set store-dir .pnpm-store
@@ -60,13 +62,11 @@ jobs:
           command: echo 'export PATH=/usr/lib/postgresql/13.5/bin/:$PATH' >> $BASH_ENV
       - run: |
           psql \
-          -d $TEST_DATABASE_URL \
+          -d $DATABASE_URL \
           -c "CREATE EXTENSION IF NOT EXISTS "uuid-ossp";"
       - run:
           name: Run database migrations
           command: pnpm typeorm:run
-          environment:
-            DATABASE_URL: postgres://postgres:postgres@127.0.0.1/postgres
 
 workflows:
   version: 2
