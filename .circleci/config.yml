@@ -29,8 +29,6 @@ jobs:
           POSTGRES_DB: postgres
           POSTGRES_PASSWORD: postgres
       - image: circleci/redis:6.2.6-alpine3.14
-    environment:
-      DATABASE_URL: postgres://postgres:postgres@127.0.0.1/postgres
     steps:
       - run: curl -f https://get.pnpm.io/v6.16.js | sudo node - add --global pnpm@6
       - run: pnpm config set store-dir .pnpm-store
@@ -56,8 +54,12 @@ jobs:
               sleep 2
             done
             echo Failed waiting for Postgres && exit 1
-      - run: psql -p 5432 -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
-      - run: pnpm typeorm:run
+      - run: sudo psql -p 5432 -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
+      - run:
+          name: Run migrations
+          command: pnpm typeorm:run
+          environment:
+            DATABASE_URL: postgres://postgres:postgres@127.0.0.1/postgres
 
 workflows:
   version: 2
