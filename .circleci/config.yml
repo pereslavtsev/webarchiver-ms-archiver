@@ -46,12 +46,24 @@ jobs:
                 - node_modules
       - attach_workspace:
           at: .
+      - run:
+          name: Waiting for PostgreSQL to start
+          command: |
+            for i in `seq 1 10`;
+            do
+              nc -z 127.0.0.1 5432 && echo Success && exit 0
+              echo -n .
+              sleep 2
+            done
+            echo Failed waiting for Postgres && exit 1
+      - run: psql -p 5432 -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
       - run: pnpm typeorm:run
-
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
-      - test
+      - test:
+          requires:
+            - build
