@@ -51,7 +51,6 @@ export class ArchiverConsumer extends LoggableProvider {
     const { data: task } = job;
     const log = this.log.child({ reqId: job.id });
     log.error(err);
-    console.log('handle failed');
     await this.tasksService.setFailed(task.id);
   }
 

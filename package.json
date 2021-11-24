@@ -1,11 +1,19 @@
 {
   "name": "@webarchiver/archiver",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "author": {
     "name": "Vitaly Pereslavtsev",
     "email": "dev@pereslavtsev.com",
     "url": "https://www.pereslavtsev.com/"
+  },
+  "homepage": "https://github.com/pereslavtsev/webarchiver-ms-archiver#readme",
+  "bugs": {
+    "url": "https://github.com/pereslavtsev/webarchiver-ms-archiver/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pereslavtsev/webarchiver-ms-archiver.git"
   },
   "license": "ISC",
   "scripts": {
@@ -22,7 +30,10 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/ormconfig.ts",
+    "typeorm:migrate": "pnpm typeorm migration:generate -- -n",
+    "typeorm:run": "pnpm typeorm migration:run"
   },
   "dependencies": {
     "@eropple/nestjs-bunyan": "^0.5.7",
