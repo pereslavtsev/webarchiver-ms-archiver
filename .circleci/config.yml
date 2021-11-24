@@ -39,9 +39,9 @@ jobs:
             - v1-deps-
       - run: pnpm i
       - save_cache:
-              key: v1-deps-{{ checksum "pnpm-lock.yaml" }}
-              paths:
-                - node_modules
+          key: v1-deps-{{ checksum "pnpm-lock.yaml" }}
+          paths:
+            - node_modules
       - attach_workspace:
           at: .
       - run:
@@ -54,9 +54,13 @@ jobs:
               sleep 2
             done
             echo Failed waiting for Postgres && exit 1
+      - run:
+          name: Add the Postgres 13.5 binaries to the path.
+          command: echo '/usr/lib/postgresql/13.5/bin/:$PATH' >> $BASH_ENV
+      - run: sudo apt install postgresql-client
       - run: sudo psql -p 5432 -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
       - run:
-          name: Run migrations
+          name: Run database migrations
           command: pnpm typeorm:run
           environment:
             DATABASE_URL: postgres://postgres:postgres@127.0.0.1/postgres
