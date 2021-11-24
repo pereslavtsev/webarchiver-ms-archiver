@@ -5,9 +5,9 @@ services:
     container_name: "ms-archiver-db"
     image: "postgres:13.5-alpine3.14"
     environment:
-      - POSTGRES_PASSWORD=webarchiver
-      - POSTGRES_USER=webarchiver
-      - POSTGRES_DB=webarchiver
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
     tty: true
   redis:
     container_name: "ms-archiver-redis"
@@ -15,12 +15,13 @@ services:
     tty: true
   server:
     container_name: "ms-archiver-server"
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; pnpm run typeorm:run && node dist/main'
     build:
       context: .
       args:
         - GITHUB_TOKEN=${GITHUB_TOKEN}
     environment:
-      - DATABASE_URL=postgres://webarchiver:webarchiver@db:5432/webarchiver
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
       - REDIS_URL=redis://redis:6379
     depends_on:
       - db
