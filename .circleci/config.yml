@@ -23,7 +23,7 @@ jobs:
   test:
     docker:
       - image: circleci/node:14.18
-      - image: circleci/postgres:13.5
+      - image: circleci/postgres:13.5-ram
         environment:
           POSTGRES_USER: postgres
           POSTGRES_DB: postgres
@@ -44,21 +44,24 @@ jobs:
             - node_modules
       - attach_workspace:
           at: .
+      - run: sudo apt-get update
+      - run: sudo apt-get install postgresql-client-13.5
+      - run: whoami
       - run:
-          name: Waiting for PostgreSQL to start
-          command: |
-            for i in `seq 1 10`;
-            do
-              nc -z 127.0.0.1 5432 && echo Success && exit 0
-              echo -n .
-              sleep 2
-            done
-            echo Failed waiting for Postgres && exit 1
+          name: Install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.3.0
       - run:
-          name: Add the Postgres 13.5 binaries to the path.
-          command: echo '/usr/lib/postgresql/13.5/bin/:$PATH' >> $BASH_ENV
-      - run: sudo apt install postgresql-client
-      - run: sudo psql -p 5432 -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
+          name: Wait for database
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: dd the Postgres 13.5 binaries to the path
+          command: echo 'export PATH=/usr/lib/postgresql/13.5/bin/:$PATH' >> $BASH_ENV
+      - run: |
+          psql \
+          -d $TEST_DATABASE_URL \
+          -c "CREATE EXTENSION IF NOT EXISTS "uuid-ossp";"
       - run:
           name: Run database migrations
           command: pnpm typeorm:run
