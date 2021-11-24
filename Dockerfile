@@ -48,8 +48,11 @@ WORKDIR /usr/src/app
 
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/node_modules ./node_modules
+
+# Migrations
 COPY tsconfig.json .
 COPY package.json .
-COPY . .
+COPY src/migrations src/migrations
+COPY src/ormconfig.ts src/ormconfig.ts
 
 CMD ["node", "dist/main"]
