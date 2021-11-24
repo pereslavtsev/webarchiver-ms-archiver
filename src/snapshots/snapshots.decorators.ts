@@ -6,6 +6,11 @@ export function InjectSnapshotsRepository() {
   return InjectRepository(Snapshot);
 }
 
-export function OnSnapshotChecked() {
-  return OnEvent('snapshot.checked');
+export class OnSnapshot {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  protected constructor() {}
+
+  static Checked() {
+    return OnEvent('snapshot.checked');
+  }
 }

@@ -2,7 +2,7 @@ import pretty from '@mechanicalhuman/bunyan-pretty';
 import bunyan from 'bunyan';
 
 export const LOGGER = bunyan.createLogger({
-  name: 'crawler',
+  name: 'archiver',
   stream: pretty(process.stdout, {
     timeStamps: false,
   }),

@@ -6,12 +6,21 @@ export function InjectTasksRepository() {
   return InjectRepository(Task);
 }
 
-export function OnTaskCreated() {
-  return OnEvent('task.created');
-}
+export class OnTask {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  protected constructor() {}
 
-export function OnTaskDone() {
-  return OnEvent('task.done');
+  protected static createDecorator(event: string) {
+    return OnEvent(`task.${event}`);
+  }
+
+  static Created() {
+    return OnTask.createDecorator('created');
+  }
+
+  static Done() {
+    return OnTask.createDecorator('done');
+  }
 }
 
 export function OnSnapshotsReceived() {

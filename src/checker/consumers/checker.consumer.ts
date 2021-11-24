@@ -31,7 +31,7 @@ export class CheckerConsumer extends LoggableProvider {
       `snapshot ${snapshot.uri} successfully checked for url ${data.url}, marking as checked...`,
     );
     const checked = await this.snapshotsService.setChecked(snapshot.id);
-    log.debug({ checked }, 'checked snapshot');
+    log.debug({ checked }, 'snapshot successfully checked');
   }
 
   @OnQueueFailed()
