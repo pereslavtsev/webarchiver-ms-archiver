@@ -26,7 +26,7 @@ export class TypeOrmConfigService
       url: this.dbConfig.url,
       entities: [__dirname, 'dist/**/*.model{.ts,.js}'],
       namingStrategy: new SnakeNamingStrategy(),
-      synchronize: true,
+      //synchronize: true,
     };
   }
 }

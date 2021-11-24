@@ -14,7 +14,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "paths": {
-      "@archiver/*": ["./src/*"]
+      "@archiver/*": ["./src/modules/*"]
     }
   }
 }

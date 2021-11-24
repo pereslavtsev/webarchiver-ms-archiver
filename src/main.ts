@@ -1,9 +1,9 @@
 import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from '@archiver/app.module';
+import { Logger } from '@archiver/shared/';
 import { grpcClientOptions } from './grpc.options';
 import { ROOT_LOGGER } from '@eropple/nestjs-bunyan';
 import { GrpcLoggingInterceptor } from '@pereslavtsev/webarchiver-misc';
-import { Logger } from './shared';
 import { ClassSerializerInterceptor } from '@nestjs/common';
 
 async function bootstrap() {
