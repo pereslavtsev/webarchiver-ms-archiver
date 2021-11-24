@@ -63,7 +63,7 @@ jobs:
       - run: |
           psql \
           -d $DATABASE_URL \
-          -c "CREATE EXTENSION IF NOT EXISTS "uuid-ossp";"
+          -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
       - run:
           name: Run database migrations
           command: pnpm typeorm:run
