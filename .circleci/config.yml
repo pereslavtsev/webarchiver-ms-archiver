@@ -47,7 +47,7 @@ jobs:
       - attach_workspace:
           at: .
       - run: sudo apt-get update
-      - run: sudo apt-get install postgresql-client-13.5
+      - run: sudo apt-get install postgresql-client
       - run: whoami
       - run:
           name: Install dockerize
