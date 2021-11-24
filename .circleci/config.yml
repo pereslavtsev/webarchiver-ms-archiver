@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: circleci/node:14.18
     steps:
-      - run: curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm@6
+      - run: curl -f https://get.pnpm.io/v6.16.js | sudo node - add --global pnpm@6
       - run: pnpm config set store-dir .pnpm-store
       - checkout
       - run: pnpm i
