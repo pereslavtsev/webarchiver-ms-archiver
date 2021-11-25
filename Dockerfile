@@ -2,7 +2,17 @@ FROM node:14.18.1 AS builder
 
 LABEL org.opencontainers.image.source = "https://github.com/pereslavtsev/webarchiver-ms-archiver"
 
-RUN apt-get update -y && apt-get install -y python
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends software-properties-common && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get install -y --no-install-recommends python3.8-venv && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    :
+    
+RUN python3.8 -m venv /venv
+ENV PATH=/venv/bin:$PATH
+    
 RUN npm i -g pnpm && pnpm install glob rimraf
 
 ARG GITHUB_TOKEN
