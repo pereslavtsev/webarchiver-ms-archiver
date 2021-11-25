@@ -25,6 +25,8 @@ jobs:
           paths: ['dist']
   
   check-and-build-only:
+    environment:
+      DOCKER_PASSWORD: $GITHUB_TOKEN
     executor: docker/machine
     steps:
       - checkout
