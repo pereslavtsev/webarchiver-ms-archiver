@@ -2,12 +2,13 @@ FROM node:14.18.1 AS builder
 
 LABEL org.opencontainers.image.source = "https://github.com/pereslavtsev/webarchiver-ms-archiver"
 
-WORKDIR /usr/src/app
-
+RUN sudo apt-get update -y && sudo apt-get install -y python
 RUN npm i -g pnpm && pnpm install glob rimraf
 
 ARG GITHUB_TOKEN
 ENV GITHUB_TOKEN=$GITHUB_TOKEN
+
+WORKDIR /usr/src/app
 
 COPY .npmrc .
 COPY package.json .
