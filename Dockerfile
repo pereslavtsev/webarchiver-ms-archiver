@@ -1,5 +1,7 @@
 FROM node:14.18.1 AS builder
 
+LABEL org.opencontainers.image.source = "https://github.com/pereslavtsev/webarchiver-ms-archiver"
+
 WORKDIR /usr/src/app
 
 RUN npm i -g pnpm && pnpm install glob rimraf
