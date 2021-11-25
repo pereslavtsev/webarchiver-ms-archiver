@@ -22,19 +22,7 @@ jobs:
       - run: pnpm build
       - persist_to_workspace:
           root: .
-          paths: ['dist']
-  
-  build-and-publish-docker-image:
-    executor: docker/machine
-    steps:
-      - checkout
-      - docker/check:
-          registry: ghcr.io
-      - docker/publish:
-          cache_from: '$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:latest'
-          image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
-          tag: latest
-          extra_build_args: '--build-arg GITHUB_TOKEN=$GITHUB_TOKEN'
+          paths: ['dist'] 
     
   test:
     docker:
@@ -88,7 +76,12 @@ workflows:
   version: 2
   deploy:
     jobs:
-      - build-and-publish-docker-image
+      - docker/publish:
+          registry: ghcr.io
+          cache_from: '$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:latest'
+          image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+          tag: latest
+          extra_build_args: '--build-arg GITHUB_TOKEN=$GITHUB_TOKEN'
   build_and_test:
     jobs:  
       - build
