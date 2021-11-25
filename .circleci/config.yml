@@ -16,9 +16,9 @@ jobs:
             - v1-deps-{{ checksum "pnpm-lock.yaml" }}
       - run: pnpm i
       - save_cache:
-              key: v1-deps-{{ checksum "pnpm-lock.yaml" }}
-              paths:
-                - node_modules
+          key: v1-deps-{{ checksum "pnpm-lock.yaml" }}
+          paths:
+            - node_modules
       - run: pnpm build
       - persist_to_workspace:
           root: .
@@ -29,6 +29,7 @@ jobs:
     steps:
       - checkout
       - docker/check
+          registry: ghcr.io
       - docker/build:
           image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
           extra_build_args: '--build-arg GITHUB_TOKEN=$GITHUB_TOKEN'
