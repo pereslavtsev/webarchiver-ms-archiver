@@ -24,14 +24,16 @@ jobs:
           root: .
           paths: ['dist']
   
-  check-and-build-only:
+  build-and-publish-docker-image:
     executor: docker/machine
     steps:
       - checkout
       - docker/check:
           registry: ghcr.io
-      - docker/build:
+      - docker/publish:
+          cache_from: '$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:latest'
           image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+          tag: latest
           extra_build_args: '--build-arg GITHUB_TOKEN=$GITHUB_TOKEN'
     
   test:
@@ -86,7 +88,7 @@ workflows:
   version: 2
   deploy:
     jobs:
-      - check-and-build-only
+      - build-and-publish-docker-image
   build_and_test:
     jobs:  
       - build
