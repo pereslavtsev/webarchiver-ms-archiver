@@ -1,13 +1,6 @@
 FROM node:14.18.1 AS builder
 
 LABEL org.opencontainers.image.source = "https://github.com/pereslavtsev/webarchiver-ms-archiver"
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends software-properties-common && \
-    add-apt-repository ppa:deadsnakes/ppa && \
-    apt-get install -y --no-install-recommends python3.8
-RUN ln -s /usr/bin/pip3 /usr/bin/pip && \
-    ln -s /usr/bin/python3.8 /usr/bin/python
     
 RUN npm i -g pnpm && pnpm install glob rimraf
 
