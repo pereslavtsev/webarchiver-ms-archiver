@@ -86,10 +86,12 @@ jobs:
 
 workflows:
   version: 2
-  build_and_test:
+  deploy:
     jobs:
-        - check-and-build-only
-#       - build
-#       - test:
-#           requires:
-#             - build
+      - check-and-build-only
+  build_and_test:
+    jobs:  
+      - build
+      - test:
+          requires:
+            - build
