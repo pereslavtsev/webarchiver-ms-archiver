@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  docker: circleci/docker@2.0.1
+
 jobs:
   build:
     docker:
@@ -20,6 +23,16 @@ jobs:
       - persist_to_workspace:
           root: .
           paths: ['dist']
+  
+  check-and-build-only:
+    executor: docker/machine
+    steps:
+      - checkout
+      - docker/check
+      - docker/build:
+          image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+          extra_build_args: '--build-arg GITHUB_TOKEN=$GITHUB_TOKEN'
+    
   test:
     docker:
       - image: circleci/node:14.18
@@ -70,9 +83,12 @@ jobs:
 
 workflows:
   version: 2
+  build-docker-image:
+    
   build_and_test:
     jobs:
-      - build
-      - test:
-          requires:
-            - build
+        - check-and-build-only
+#       - build
+#       - test:
+#           requires:
+#             - build
