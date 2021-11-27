@@ -23,14 +23,16 @@ RUN pnpm build
 FROM node:14.18.1-alpine3.14
 
 # Installs latest Chromium package.
-RUN apk add --no-cache \
-      chromium \
-      nss \
-      freetype \
-      harfbuzz \
-      ca-certificates \
-      ttf-freefont \
-      bash
+RUN apk update \
+    && apk add --no-cache \
+        chromium \
+        nss \
+        freetype \
+        harfbuzz \
+        ca-certificates \
+        ttf-freefont \
+        bash \
+        build-base
 
 # Tell Puppeteer to skip installing Chrome. We'll be using the installed package.
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
