@@ -19,7 +19,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "prepare": "husky install",
-    "build": "nest build",
+    "build": "make",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -31,9 +31,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/ormconfig.ts",
-    "typeorm:migrate": "pnpm typeorm migration:generate -- -n",
-    "typeorm:run": "pnpm typeorm migration:run"
+    "migrations:create": "make migrations-create",
+    "migrations:run": "make migrations-run"
   },
   "dependencies": {
     "@eropple/nestjs-bunyan": "^0.5.7",

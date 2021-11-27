@@ -15,7 +15,7 @@ services:
     tty: true
   server:
     container_name: "ms-archiver-server"
-    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; pnpm run typeorm:run && node dist/main'
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; make migrations-run && node dist/main'
     build:
       context: .
       args:

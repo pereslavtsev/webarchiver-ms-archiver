@@ -11,6 +11,7 @@ WORKDIR /usr/src/app
 
 COPY .npmrc .
 COPY package.json .
+COPY Makefile .
 COPY pnpm-lock.yaml .
 
 RUN pnpm install --frozen-lockfile
@@ -30,8 +31,6 @@ RUN apk add --no-cache \
       ca-certificates \
       ttf-freefont \
       bash
-
-RUN npm i -g pnpm
 
 # Tell Puppeteer to skip installing Chrome. We'll be using the installed package.
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
@@ -54,7 +53,7 @@ COPY --from=builder /usr/src/app/node_modules ./node_modules
 # Migrations
 COPY tsconfig.json .
 COPY package.json .
-COPY src/migrations src/migrations
-COPY src/ormconfig.ts src/ormconfig.ts
+COPY Makefile .
+COPY src src
 
 CMD ["node", "dist/main"]
