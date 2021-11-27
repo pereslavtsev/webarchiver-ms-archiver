@@ -54,6 +54,7 @@ const taskFK = new TableForeignKey({
   columnNames: ['task_id'],
   referencedTableName: 'tasks',
   referencedColumnNames: ['id'],
+  onDelete: 'CASCADE',
 });
 
 export class SnapshotsTable1637779355805 implements MigrationInterface {
