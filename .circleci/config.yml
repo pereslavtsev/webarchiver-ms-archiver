@@ -71,9 +71,9 @@ jobs:
       - run:
           name: Run database migrations
           command: pnpm migrations:run
-      - run:
-          name: Seed database
-          command: pnpm seed:run
+#       - run:
+#           name: Seed database
+#           command: pnpm seed:run
 
 workflows:
   version: 2
