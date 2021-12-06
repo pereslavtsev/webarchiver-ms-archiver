@@ -9,7 +9,7 @@ import { LoggableProvider } from '@pereslavtsev/webarchiver-misc';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
 
 @Injectable()
-export class ArchiverService extends LoggableProvider {
+export class TimetravelService extends LoggableProvider {
   constructor(
     @RootLogger() rootLogger: Bunyan,
     @InjectMementoClient()
@@ -22,9 +22,10 @@ export class ArchiverService extends LoggableProvider {
 
   private transformSnapshots(
     response: MementosResponse['mementos']['closest'],
+    taskId: Task['id'],
   ): Snapshot[] {
     return response.uri.map((uri) =>
-      this.snapshotsService.create(uri, response.datetime),
+      this.snapshotsService.create(uri, response.datetime, taskId),
     );
   }
 
@@ -32,7 +33,7 @@ export class ArchiverService extends LoggableProvider {
     const {
       mementos: { closest },
     } = await this.client.uri(task.url).mementos(task.desiredDate);
-    const snapshots = this.transformSnapshots(closest);
+    const snapshots = this.transformSnapshots(closest, task.id);
     await this.tasksService.addSnapshots(
       task.id,
       snapshots.map((snapshot) => ({ ...snapshot, taskId: task.id })),

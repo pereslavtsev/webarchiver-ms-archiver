@@ -10,15 +10,15 @@ import type { Task } from '@archiver/tasks';
 import { TIMETRAVEL_QUEUE } from '../archiver.constants';
 import { LoggableProvider } from '@pereslavtsev/webarchiver-misc';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
-import { ArchiverService } from '../services';
+import { TimetravelService } from '../services';
 import { TasksService } from '@archiver/tasks';
 import { Snapshot } from '@archiver/snapshots';
 
 @Processor(TIMETRAVEL_QUEUE)
-export class ArchiverConsumer extends LoggableProvider {
+export class TimetravelConsumer extends LoggableProvider {
   constructor(
     @RootLogger() rootLogger: Bunyan,
-    private archiverService: ArchiverService,
+    private archiverService: TimetravelService,
     private tasksService: TasksService,
   ) {
     super(rootLogger);

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { OnTask, TasksService } from '@archiver/tasks';
 import type { Task } from '@archiver/tasks';
 import { InjectQueue } from '@nestjs/bull';
-import { TIMETRAVEL_QUEUE } from '../archiver.constants';
+import { ARCHIVE_ORG_QUEUE, TIMETRAVEL_QUEUE } from '../archiver.constants';
 import { Queue } from 'bull';
 import { LoggableProvider } from '@pereslavtsev/webarchiver-misc';
 import { Bunyan, RootLogger } from '@eropple/nestjs-bunyan';
@@ -12,6 +12,8 @@ import { OnSnapshot, Snapshot, SnapshotsService } from '@archiver/snapshots';
 export class ArchiverListener extends LoggableProvider {
   constructor(
     @RootLogger() rootLogger: Bunyan,
+    @InjectQueue(ARCHIVE_ORG_QUEUE)
+    private archiveOrgQueue: Queue<Task>,
     @InjectQueue(TIMETRAVEL_QUEUE)
     private timetravelQueue: Queue<Task>,
     private snapshotsService: SnapshotsService,
@@ -22,9 +24,12 @@ export class ArchiverListener extends LoggableProvider {
 
   @OnTask.Created()
   async handleTaskCreatedEvent(task: Task): Promise<void> {
-    await this.timetravelQueue.add(task, {
+    await this.archiveOrgQueue.add(task, {
       jobId: task.id,
     });
+    // await this.timetravelQueue.add(task, {
+    //   jobId: task.id,
+    // });
   }
 
   @OnSnapshot.Checked()

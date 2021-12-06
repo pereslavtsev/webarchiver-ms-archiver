@@ -19,8 +19,12 @@ export class SnapshotsService extends LoggableProvider {
     super(rootLogger);
   }
 
-  create(uri: string, capturedAt: Date): Snapshot {
-    const snapshot = this.snapshotsRepository.create({ uri, capturedAt });
+  create(uri: string, capturedAt: Date, taskId: Task['id']): Snapshot {
+    const snapshot = this.snapshotsRepository.create({
+      uri,
+      capturedAt,
+      taskId,
+    });
     return plainToClass(Snapshot, snapshot);
   }
 
